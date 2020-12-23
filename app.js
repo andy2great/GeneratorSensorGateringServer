@@ -1,13 +1,15 @@
 const express = require('express')
 const app = express()
 const port = 59595
+var repertoire= '*'
+var index = 0
 
 var msg = 'Hello World';
 console.log(msg);
 
-app.get('/', (req, res) => {
-    console.log(req);
-    res.send('Hello World!')
+app.get(repertoire, (req, res) => {
+    console.log(req, index++)
+    res.send(`Hello World! ${index - 1}`)
 })
   
 
