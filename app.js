@@ -1,16 +1,13 @@
-const ap = require("./accessPoint");
-const db = require("./db");
+const ap = require("./accessPoint")
+const db = require("./db")
 
-ap.setup();
+ap.setup()
 db.connect(err => {
     if (err) {
-        console.log("Cant connect to db: " + err);
-        process.exit(-1);
+        console.log("Cant connect to db: " + err)
+        process.exit(-1)
     } else {
-        console.log("db connected");
-        
-        db.getAllData().then((res) => {
-            console.log(res);
-        })
+        console.log("db connected")
+        db.deleteSensorData({})
     }
 });

@@ -28,24 +28,32 @@ const getDB = () => {
   return state.db;
 };
 
-const getAllData = () => {
+const getAllSensorData = () => {
   return state
     .db
     .collection(COLLECTION_SENSEURS)
     .find()
-    .toArray();
+    .toArray()
 }
 
-const addData = (data) => {
+const addSensorData = (data) => {
   return state
     .db
     .collection(COLLECTION_SENSEURS)
-    .insertMany(data);
+    .insertMany(data)
+}
+
+const deleteSensorData = (data) => {
+  return state
+    .db
+    .collection(COLLECTION_SENSEURS)
+    .deleteMany(data)
 }
 
 module.exports = {
   connect,
   getDB,
-  getAllData,
-  addData,
+  getAllSensorData,
+  addSensorData,
+  deleteSensorData,
 };
