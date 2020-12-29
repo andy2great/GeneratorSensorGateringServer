@@ -1,9 +1,10 @@
-const { MongoClient, ObjectID } = require("mongodb")
+const { MongoClient } = require("mongodb")
 const dbName = "GeneratriceDB"
 const url = "mongodb://localhost:27017"
 const mongoOptions = { useNewUrlParser: true }
 
 const COLLECTION_SENSEURS = 'Senseurs'
+const COLLECTION_VALEURREFERENCE = 'ValeurReference'
 
 const state = {
   db: null
@@ -50,10 +51,20 @@ const deleteSensorData = (data) => {
     .deleteMany(data)
 }
 
+const getAllRefData = () => {
+  return state
+    .db
+    .collection(COLLECTION_VALEURREFERENCE)
+    .find()
+    .toArray()
+}
+
+// Ce module permet d'exposer les fonctions ci-haut. 
 module.exports = {
   connect,
   getDB,
   getAllSensorData,
   addSensorData,
   deleteSensorData,
+  getAllRefData,
 };

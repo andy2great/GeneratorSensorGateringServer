@@ -16,13 +16,20 @@ getExpress = () => {
 setup = () => {
     app.use(jsonParser)
 
-    app.get(repertoire, (req, res) => {
+    // Point accès pour obtenir les valeurs de référence
+    app.get('/ValeurReference/ObtenirValeurInitiale', (req, res) => {
+        db.getAllRefData().then(data => {
+            res.send(data)
+        })
+    })
+
+    app.get('/sensors/getAllSensors', (req, res) => {
         db.getAllSensorData().then(data => {
             res.send(data)
         })
     })
     
-    app.post(repertoire, (req, res) => {
+    app.post('/sensors/soummettreValeur', (req, res) => {
         console.log(req.body, index++)
         data = req.body.map(x => {
             return {
