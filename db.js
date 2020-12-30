@@ -29,7 +29,7 @@ const getDB = () => {
   return state.db;
 };
 
-const getAllSensorData = () => {
+const ObtenirSenseursData = () => {
   return state
     .db
     .collection(COLLECTION_SENSEURS)
@@ -37,21 +37,21 @@ const getAllSensorData = () => {
     .toArray()
 }
 
-const addSensorData = (data) => {
+const AjouterSenseursData = (data) => {
   return state
     .db
     .collection(COLLECTION_SENSEURS)
     .insertMany(data)
 }
 
-const deleteSensorData = (data) => {
+const EnleverSenseursData = (data) => {
   return state
     .db
     .collection(COLLECTION_SENSEURS)
     .deleteMany(data)
 }
 
-const getAllRefData = () => {
+const ObtenirRefValeur = () => {
   return state
     .db
     .collection(COLLECTION_VALEURREFERENCE)
@@ -63,8 +63,8 @@ const getAllRefData = () => {
 module.exports = {
   connect,
   getDB,
-  getAllSensorData,
-  addSensorData,
-  deleteSensorData,
-  getAllRefData,
+  ObtenirSenseursData,
+  AjouterSenseursData,
+  EnleverSenseursData,
+  ObtenirRefValeur,
 };

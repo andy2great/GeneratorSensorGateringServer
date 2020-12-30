@@ -1,5 +1,7 @@
-const ap = require("./accessPoint")
-const db = require("./db")
+// Le fichier primaire qui débute le serveur
+
+const ap = require("./accessPoint")     //  inclue le fichier accessPoint.js
+const db = require("./db")              //  inclue le fichier db.js
 
 ap.setup()
 db.connect(err => {
@@ -8,6 +10,6 @@ db.connect(err => {
         process.exit(-1)
     } else {
         console.log("db connected")
-        db.deleteSensorData({})
+        db.EnleverSenseursData({})                 // Important - à enlever 
     }
 });
