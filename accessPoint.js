@@ -37,13 +37,14 @@ setup = () => {
         console.log(req.body, index++)
        
        // ajouter timestamps dans la liste avec la fonction map
+       // assurer JSON est en array
         data = req.body.map(x => {
             return {
                 timestamp: new Date(),
                 ...x
             }
         })
-
+        
         db.AjouterSenseursData(data)
         res.send('Roger that captain')
     })
