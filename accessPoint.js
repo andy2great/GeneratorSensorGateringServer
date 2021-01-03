@@ -22,7 +22,12 @@ setup = () => {
     // Point accès pour obtenir les valeurs de référence
     app.get('/reference/obtenir', (req, res) => {
         db.ObtenirRefValeur().then(data => {
-            res.send(data)
+            res.send(
+                data.map((x, i) => ({
+                    ...x,
+                    _id: i,
+                })
+            ))
         })
     })
 

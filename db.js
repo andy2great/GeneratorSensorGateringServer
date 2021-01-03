@@ -51,11 +51,11 @@ const EnleverSenseursData = (data) => {
     .deleteMany(data)
 }
 
-const ObtenirRefValeur = () => {
+const ObtenirRefValeur = (data) => {
   return state
     .db
     .collection(COLLECTION_VALEURREFERENCE)
-    .find()
+    .find(data)
     .toArray()
 }
 
