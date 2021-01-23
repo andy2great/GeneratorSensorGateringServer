@@ -1,6 +1,7 @@
 const express = require('express')              // librairie du node_module qui gère les endpoint
 const bodyParser = require('body-parser')       // librairie du node_module qui parse 
 const db = require('./db')                      // inclue le fichier db.js
+const cors = require('cors');
 
 const app = express()                           // app gère les endpoints
 const jsonParser = bodyParser.json()            // parse JSON
@@ -15,7 +16,23 @@ getExpress = () => {
 }
 
 setup = () => {
-    
+    const allowedOrigins = ["http://localhost:3000", "http://10.0.0.116:3000"];
+
+    app.use(
+        cors({
+            origin: function(origin, callback) {
+                /*if (!origin) return callback(null, true)
+                if (allowedOrigins.indexOf(origin) === -1) {
+                    var msg =
+                        "The CORS policy for this site does not " +
+                        "allow access from the specified Origin."
+                    return callback(new Error(msg), false)
+                }*/
+                return callback(null, true)
+            }
+        })
+    )
+
     // tout au long, utilise JSON parser
     app.use(jsonParser)
 

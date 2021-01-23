@@ -51,11 +51,12 @@ const ObtenirDernierDonnerSenseur = () => {
                 timestamp: { $last: "$timestamp" },
                 senseur: { $last: "$senseur" },
                 val: { $last: "$val" },
-                Location: { $last: "$location" },
-                ModeOpr: { $last: "$modeOpr" },
+                location: { $last: "$location" },
+                modeOpr: { $last: "$modeOpr" },
                 tModule: { $last: "$tModule" }
             },
         },
+        { $sort : { location : 1 } }
       ])
       .toArray()
 }
