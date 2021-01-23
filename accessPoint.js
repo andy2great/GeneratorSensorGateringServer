@@ -37,6 +37,13 @@ setup = () => {
             res.send(data)
         })
     })
+
+    app.get('/senseurs/last', (req, res) => {
+        db.ObtenirDernierDonnerSenseur()
+            .then(result => {
+                res.send(result)
+            })
+    })
     
     app.post('/senseurs/soummettre', (req, res) => {
         console.log(req.body, index++)

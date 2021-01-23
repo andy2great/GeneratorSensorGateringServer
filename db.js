@@ -37,6 +37,29 @@ const ObtenirSenseursData = () => {
     .toArray()
 }
 
+const ObtenirDernierDonnerSenseur = () => {
+  return state
+      .db
+      .collection(COLLECTION_SENSEURS)
+      .aggregate([
+        {
+            $group: {
+                _id: {
+                    'location': '$location',
+                    'senseur': '$senseur'
+                },
+                timestamp: { $last: "$timestamp" },
+                senseur: { $last: "$senseur" },
+                val: { $last: "$val" },
+                Location: { $last: "$location" },
+                ModeOpr: { $last: "$modeOpr" },
+                tModule: { $last: "$tModule" }
+            },
+        },
+      ])
+      .toArray()
+}
+
 const AjouterSenseursData = (data) => {
   return state
     .db
@@ -64,6 +87,7 @@ module.exports = {
   connect,
   getDB,
   ObtenirSenseursData,
+  ObtenirDernierDonnerSenseur,
   AjouterSenseursData,
   EnleverSenseursData,
   ObtenirRefValeur,

@@ -10,6 +10,6 @@ db.connect(err => {
         process.exit(-1)
     } else {
         console.log("db connected")
-        db.EnleverSenseursData({})                 // Important - à enlever 
+        //db.EnleverSenseursData({})                 // Important - à enlever 
     }
 });
