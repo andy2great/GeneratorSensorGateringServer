@@ -1,16 +1,16 @@
-const { MongoClient } = require("mongodb")
-const dbName = "GeneratriceDB"
-const url = "mongodb://localhost:27017"
-const mongoOptions = { useNewUrlParser: true }
+const { MongoClient } = require("mongodb");
+const dbName = "GeneratriceDB";
+const url = "mongodb://10.0.0.121:27017";
+const mongoOptions = { useNewUrlParser: true };
 
-const COLLECTION_SENSEURS = 'Senseurs'
-const COLLECTION_VALEURREFERENCE = 'ValeurReference'
+const COLLECTION_SENSEURS = "Senseurs";
+const COLLECTION_VALEURREFERENCE = "ValeurReference";
 
 const state = {
-  db: null
+  db: null,
 };
 
-const connect = cb => {
+const connect = (cb) => {
   if (state.db) {
     cb();
   } else {
@@ -30,65 +30,91 @@ const getDB = () => {
 };
 
 const ObtenirSenseursData = () => {
-  return state
-    .db
-    .collection(COLLECTION_SENSEURS)
-    .find()
-    .toArray()
-}
+  return state.db.collection(COLLECTION_SENSEURS).find().toArray();
+};
 
 const ObtenirDernierDonnerSenseur = () => {
-  return state
-      .db
+  return state.db
+    .collection(COLLECTION_SENSEURS)
+    .aggregate([
+      {
+        $group: {
+          _id: {
+            location: "$location",
+            senseur: "$senseur",
+          },
+          timestamp: { $last: "$timestamp" },
+          senseur: { $last: "$senseur" },
+          val: { $last: "$val" },
+          location: { $last: "$location" },
+          modeOpr: { $last: "$modeOpr" },
+          tModule: { $last: "$tModule" },
+        },
+      },
+      { $sort: { location: 1 } },
+    ])
+    .toArray();
+};
+
+const getAllModules = () => {
+  return state.db
+    .collection(COLLECTION_SENSEURS)
+    .aggregate([
+      {
+        $group: {
+          _id: {
+            location: "$location",
+          },
+        },
+      },
+    ])
+    .toArray();
+};
+
+const ObtenirDonnerParDate = () => {
+  return getAllModules().then((res) => {
+    return state.db
       .collection(COLLECTION_SENSEURS)
       .aggregate([
+        { $sort: { timestamp: 1 } },
         {
-            $group: {
-                _id: {
-                    'location': '$location',
-                    'senseur': '$senseur'
-                },
-                timestamp: { $last: "$timestamp" },
-                senseur: { $last: "$senseur" },
-                val: { $last: "$val" },
-                location: { $last: "$location" },
-                modeOpr: { $last: "$modeOpr" },
-                tModule: { $last: "$tModule" }
+          $group: {
+            _id: {
+              location: "$location",
+              senseur: "$senseur",
             },
+            val: {
+              $push: {
+                timestamp: "$timestamp",
+                val: "$val",
+              },
+            },
+          },
         },
-        { $sort : { location : 1 } }
       ])
-      .toArray()
-}
+      .toArray();
+  });
+};
 
 const AjouterSenseursData = (data) => {
-  return state
-    .db
-    .collection(COLLECTION_SENSEURS)
-    .insertMany(data)
-}
+  return state.db.collection(COLLECTION_SENSEURS).insertMany(data);
+};
 
 const EnleverSenseursData = (data) => {
-  return state
-    .db
-    .collection(COLLECTION_SENSEURS)
-    .deleteMany(data)
-}
+  return state.db.collection(COLLECTION_SENSEURS).deleteMany(data);
+};
 
 const ObtenirRefValeur = (data) => {
-  return state
-    .db
-    .collection(COLLECTION_VALEURREFERENCE)
-    .find(data)
-    .toArray()
-}
+  return state.db.collection(COLLECTION_VALEURREFERENCE).find(data).toArray();
+};
 
-// Ce module permet d'exposer les fonctions ci-haut. 
+// Ce module permet d'exposer les fonctions ci-haut.
 module.exports = {
   connect,
   getDB,
   ObtenirSenseursData,
   ObtenirDernierDonnerSenseur,
+  ObtenirDonnerParDate,
   AjouterSenseursData,
   EnleverSenseursData,
   ObtenirRefValeur,
