@@ -67,6 +67,10 @@ setup = () => {
     });
   });
 
+  app.get("/yolo", (req, res) => {
+    res.send("good job");
+  });
+
   app.post("/senseurs/soummettre", (req, res) => {
     console.log(req.body, index++);
 
