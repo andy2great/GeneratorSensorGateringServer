@@ -73,10 +73,13 @@ const getAllModules = () => {
 
 const ObtenirDonnerParDate = () => {
   return getAllModules().then((res) => {
+    const date = new Date();
+    date.setDate(date.getDate() - 7);
     return state.db
       .collection(COLLECTION_SENSEURS)
       .aggregate([
         { $sort: { timestamp: 1 } },
+        { $match: { timestamp: { $gte: date } } },
         {
           $group: {
             _id: {
@@ -107,6 +110,12 @@ const EnleverSenseursData = (data) => {
 const ObtenirRefValeur = (data) => {
   return state.db.collection(COLLECTION_VALEURREFERENCE).find(data).toArray();
 };
+
+const Login = () => {};
+
+const FindUser = () => {};
+
+const CreateUser = () => {};
 
 // Ce module permet d'exposer les fonctions ci-haut.
 module.exports = {
