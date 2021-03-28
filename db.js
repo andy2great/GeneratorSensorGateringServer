@@ -111,11 +111,11 @@ const ObtenirRefValeur = (data) => {
   return state.db.collection(COLLECTION_VALEURREFERENCE).find(data).toArray();
 };
 
-const Login = () => {};
+/*const Login = () => {};
 
 const FindUser = () => {};
 
-const CreateUser = () => {};
+const CreateUser = () => {};*/
 
 // Ce module permet d'exposer les fonctions ci-haut.
 module.exports = {
