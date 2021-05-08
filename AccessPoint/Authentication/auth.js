@@ -38,3 +38,20 @@ app.post('/signup', (req, res) => {
       res.send(400, 'Nop get out!');
     });
 });
+
+app.get('module/signup', (req, res) => {
+  const token = req.token;
+  const mac = req.mac;
+  const ip = req.ip;
+
+  auth
+    .CreateModule(token, mac, ip)
+    .then((result) => {
+      if (!result) res.status(400);
+      res.send('success!');
+    })
+    .catch((ex) => {
+      res.status(400);
+      res.send(400, 'Nop get out!');
+    });
+});

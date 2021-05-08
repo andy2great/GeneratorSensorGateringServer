@@ -19,6 +19,8 @@ const getExpress = () => {
 const setup = () => {
   const allowedOrigins = ['http://localhost:3000', 'http://10.0.0.116:3000'];
 
+  app.set('trust proxy', true);
+
   app.use(
     cors({
       origin: function (origin, callback) {
@@ -31,7 +33,7 @@ const setup = () => {
   app.use(jsonParser);
 
   // Point accès pour obtenir les valeurs de référence
-  app.get('/reference/obtenir', (req, res) => {
+  app.get('/reference/obtenir', authService.isModuleReal, (req, res) => {
     db.ObtenirRefValeur().then((data) => {
       res.send(
         data.map((x, i) => ({
@@ -43,33 +45,34 @@ const setup = () => {
   });
 
   // Point accès pour obtenir les valeurs de référence
-  app.get('/senseurs/obtenir', (req, res) => {
+  app.get('/senseurs/obtenir', authService.isModuleReal, (req, res) => {
     db.ObtenirSenseursData().then((data) => {
       res.send(data);
     });
   });
 
   app.get('/senseurs/last', authService.isLoggedIn, (req, res) => {
-    db.ObtenirDernierDonnerSenseur().then((result) => {
+    db.ObtenirDernierDonnerSenseur(req.modules).then((result) => {
       res.send(result);
     });
   });
 
   app.get('/senseurs/chart', authService.isLoggedIn, (req, res) => {
-    db.ObtenirDonnerParDate().then((result) => {
+    db.ObtenirDonnerParDate(req.modules).then((result) => {
       res.send(result);
     });
   });
 
-  app.post('/senseurs/soummettre', (req, res) => {
+  app.post('/senseurs/soummettre', authService.isModuleReal, (req, res) => {
     console.log(req.body, index++);
 
     // ajouter timestamps dans la liste avec la fonction map
     // assurer JSON est en array
     const data = req.body.map((x) => {
       return {
-        timestamp: new Date(),
         ...x,
+        timestamp: new Date(),
+        module: req.module._id,
       };
     });
 

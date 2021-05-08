@@ -4,6 +4,7 @@ const { COLLECTION } = require('../Constants/DB.constant');
 
 const salt1 = 'RTEWY4[5wylpgw[-fi0q4tu905w4jgtsmvq';
 const salt2 = "'gw;lh[pnrs-0aoe5fDFSHU;ly5sp4[oa0r-D";
+const salt3 = 'GBGS%#_$OT{EFadVB3qtGA}VW#PR@QWY^%JUdfsdv';
 
 const getPassHash = (password) => {
   return crypto
@@ -66,6 +67,10 @@ const FindUser = (email) => {
   return db.getDB().collection(COLLECTION.USER).findOne({ email });
 };
 
+const FindModuleByIdentifier = (token, mac, ip) => {
+  return db.getDB().collection(COLLECTION.module).findOne({ token });
+};
+
 const CreateUser = (email, password) => {
   return FindUser(email).then((res) => {
     if (res) throw 'no!';
@@ -79,9 +84,41 @@ const CreateUser = (email, password) => {
   });
 };
 
+const CreateModule = (token, mac, ip) => {
+  return FindUserByToken(token).then((res) => {
+    if (!res) throw 'no!';
+
+    const moduleHash = crypto
+      .createHash('sha256')
+      .update(salt3 + ' | ' + token + ' | ' + mac + ' | ' + ip)
+      .digest('hex');
+
+    return db.getDB().collection(COLLECTION.MODULE).insertOne({
+      name: 'Chris!!',
+      mac,
+      ip,
+      token: moduleHash,
+      masterUser: res._id,
+    });
+  });
+};
+
+const AssociatedModuleToUser = (userId) => {
+  return db
+    .getDB()
+    .collection(COLLECTION.MODULE)
+    .find({
+      masterUser: userId,
+    })
+    .toArray();
+};
+
 module.exports = {
   Login,
   FindUserByToken,
   FindUser,
+  FindModuleByIdentifier,
   CreateUser,
+  CreateModule,
+  AssociatedModuleToUser,
 };

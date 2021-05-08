@@ -34,6 +34,9 @@ const connect = (cb) => {
 
             if (!collectionNames.includes(COLLECTION.USER))
               state.db.createCollection(COLLECTION.USER);
+
+            if (!collectionNames.includes(COLLECTION.MODULE))
+              state.db.createCollection(COLLECTION.MODULE);
           });
 
         cb();
@@ -50,10 +53,11 @@ const ObtenirSenseursData = () => {
   return state.db.collection(COLLECTION.SENSEURS).find().toArray();
 };
 
-const ObtenirDernierDonnerSenseur = () => {
+const ObtenirDernierDonnerSenseur = (modules) => {
   return state.db
     .collection(COLLECTION.SENSEURS)
     .aggregate([
+      { $match: { module: { $in: modules } } },
       {
         $group: {
           _id: {
@@ -73,47 +77,30 @@ const ObtenirDernierDonnerSenseur = () => {
     .toArray();
 };
 
-const getAllModules = () => {
+const ObtenirDonnerParDate = (modules) => {
+  const date = new Date();
+  date.setDate(date.getDate() - 7);
   return state.db
     .collection(COLLECTION.SENSEURS)
     .aggregate([
+      { $sort: { timestamp: 1 } },
+      { $match: { module: { $in: modules }, timestamp: { $gte: date } } },
       {
         $group: {
           _id: {
             location: '$location',
+            senseur: '$senseur',
+          },
+          val: {
+            $push: {
+              timestamp: '$timestamp',
+              val: '$val',
+            },
           },
         },
       },
     ])
     .toArray();
-};
-
-const ObtenirDonnerParDate = () => {
-  return getAllModules().then((res) => {
-    const date = new Date();
-    date.setDate(date.getDate() - 7);
-    return state.db
-      .collection(COLLECTION.SENSEURS)
-      .aggregate([
-        { $sort: { timestamp: 1 } },
-        { $match: { timestamp: { $gte: date } } },
-        {
-          $group: {
-            _id: {
-              location: '$location',
-              senseur: '$senseur',
-            },
-            val: {
-              $push: {
-                timestamp: '$timestamp',
-                val: '$val',
-              },
-            },
-          },
-        },
-      ])
-      .toArray();
-  });
 };
 
 const AjouterSenseursData = (data) => {
