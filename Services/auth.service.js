@@ -38,7 +38,7 @@ isModuleReal = (req, res, next) => {
         req.module = module;
         req.token = token;
         req.mac = mac;
-        req.ip = ip;
+
         next();
       }
     });

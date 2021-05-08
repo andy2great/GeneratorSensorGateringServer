@@ -90,16 +90,24 @@ const CreateModule = (token, mac, ip) => {
 
     const moduleHash = crypto
       .createHash('sha256')
-      .update(salt3 + ' | ' + token + ' | ' + mac + ' | ' + ip)
+      .update(
+        salt3 + ' | ' + token + ' | ' + mac + ' | ' + ip + ' | ' + new Date()
+      )
       .digest('hex');
 
-    return db.getDB().collection(COLLECTION.MODULE).insertOne({
-      name: 'Chris!!',
-      mac,
-      ip,
-      token: moduleHash,
-      masterUser: res._id,
-    });
+    return db
+      .getDB()
+      .collection(COLLECTION.MODULE)
+      .insertOne({
+        name: 'Chris!!',
+        mac,
+        ip,
+        token: moduleHash,
+        masterUser: res._id,
+      })
+      .then((succ) => {
+        return succ ? moduleHash : null;
+      });
   });
 };
 
