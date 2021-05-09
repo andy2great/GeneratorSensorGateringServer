@@ -45,16 +45,18 @@ app.get('/module/signup', authService.isLoggedIn, (req, res) => {
   const token = req.header('Token');
   const mac = req.header('Mac');
   const ip = req.ip;
-
+  console.log('enter');
   auth
     .CreateModule(token, mac, ip)
     .then((result) => {
       if (!result) res.status(400);
-      res.status(200).send(result);
+      //res.status(200).send(result);
+
+      console.log('done', result);
 
       let currentIndex = 0;
       const maxAmount = 50;
-      while (currentIndex < max) {
+      while (currentIndex < result.length) {
         res.write(result.slice(currentIndex, currentIndex + maxAmount));
         currentIndex += maxAmount;
       }
@@ -62,6 +64,7 @@ app.get('/module/signup', authService.isLoggedIn, (req, res) => {
       res.end();
     })
     .catch((ex) => {
+      console.log(ex);
       res.status(400).send('Nop get out!');
     });
 });
