@@ -51,6 +51,15 @@ app.get('/module/signup', authService.isLoggedIn, (req, res) => {
     .then((result) => {
       if (!result) res.status(400);
       res.status(200).send(result);
+
+      let currentIndex = 0;
+      const maxAmount = 50;
+      while (currentIndex < max) {
+        res.write(result.slice(currentIndex, currentIndex + maxAmount));
+        currentIndex += maxAmount;
+      }
+
+      res.end();
     })
     .catch((ex) => {
       res.status(400).send('Nop get out!');

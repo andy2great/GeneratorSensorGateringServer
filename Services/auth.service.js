@@ -4,20 +4,19 @@ isLoggedIn = (req, res, next) => {
   const token = req.header('Token');
   if (token) {
     authDb.FindUserByToken(token).then((user) => {
-      authDb.AssociatedModuleToUser(user._id).then((modules) => {
-        if (
-          user == null ||
-          !user.tokenExpirationDate ||
-          user.tokenExpirationDate < new Date()
-        ) {
-          res.status(401);
-          res.send(401, 'Unauthorized');
-        } else {
+      if (
+        user == null ||
+        !user.tokenExpirationDate ||
+        user.tokenExpirationDate < new Date()
+      ) {
+        res.status(401).send('Unauthorized');
+      } else {
+        authDb.AssociatedModuleToUser(user._id).then((modules) => {
           req.user = user;
           req.modules = modules.map((x) => x._id);
           next();
-        }
-      });
+        });
+      }
     });
   } else {
     res.send(401, 'Unauthorized');
